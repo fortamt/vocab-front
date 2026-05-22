@@ -9,6 +9,28 @@
     //});
 
     // Стек экранов для каждой вкладки
+
+// 1. Убедимся, что мы внутри Telegram
+if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+
+    // 2. Быстрый доступ к данным (НЕБЕЗОПАСНО для передачи на сервер!)
+    const unsafeData = tg.initDataUnsafe;
+    console.log('Данные пользователя (небезопасно):', unsafeData);
+    
+    if (unsafeData && unsafeData.user) {
+        console.log('ID:', unsafeData.user.id);
+        console.log('Имя:', unsafeData.user.first_name);
+        // ... другие поля
+    }
+
+    // 3. Данные для отправки на сервер (БЕЗОПАСНО)
+    const safeInitData = tg.initData;
+    console.log('Строка для проверки на сервере:', safeInitData);
+
+    // Далее вы можете отправить safeInitData на ваш бэкенд через fetch
+}  
+
 const screenStacks = {
   home: ['main'],
   words: ['main'],

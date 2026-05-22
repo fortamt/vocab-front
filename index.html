@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WordPal - Learn English</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Background decoration -->
+    <div class="bg-decoration"></div>
+
+    <!-- Tab Content -->
+    <main class="tab-content">
+      
+      <!-- HOME TAB -->
+      <section class="tab-panel active" id="panel-home">
+        <div class="home-container">
+
+          <div class="screen active" id="screen-home-main">
+            <!-- User info -->
+            <div class="user-info">
+              <div class="avatar">
+                <span>W</span>
+              </div>
+              <div class="user-details">
+                <span class="greeting">Привет,</span>
+                <span class="username">User</span>
+              </div>
+              <div class="streak-badge">
+                <span class="fire-icon">🔥</span>
+                <span class="streak-count">5</span>
+              </div>
+            </div>
+
+            <!-- Level Progress Circle -->
+            <div class="level-section">
+              <div class="level-circle">
+                <svg class="progress-ring" viewBox="0 0 200 200">
+                  <circle class="progress-bg" cx="100" cy="100" r="90" />
+                  <circle class="progress-fill" cx="100" cy="100" r="90" 
+                    stroke-dasharray="565.48" stroke-dashoffset="169.64" />
+                </svg>
+                <div class="level-info">
+                  <span class="level-label">Level</span>
+                  <span class="level-value">A2</span>
+                  <span class="level-progress">70%</span>
+                </div>
+              </div>
+              <div class="floating-stars">
+                <span class="star star-1">✦</span>
+                <span class="star star-2">✦</span>
+                <span class="star star-3">✦</span>
+              </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+              <div class="stat-card orange">
+                <span class="stat-icon">📚</span>
+                <span class="stat-value">156</span>
+                <span class="stat-label">Слов выучено</span>
+              </div>
+              <div class="stat-card pink">
+                <span class="stat-icon">⏱️</span>
+                <span class="stat-value">12h</span>
+                <span class="stat-label">Времени потрачено</span>
+              </div>
+              <div class="stat-card mint">
+                <span class="stat-icon">🎯</span>
+                <span class="stat-value">85%</span>
+                <span class="stat-label">Точность</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button class="btn btn-primary" onclick="openScreen('home', 'achievements')">
+                <span class="btn-icon">🏆</span>
+                Достижения
+              </button>
+              <button class="btn btn-secondary">
+                <span class="btn-icon">📊</span>
+                Определить мой уровень
+              </button>
+            </div>
+          </div>
+
+          <div class="screen" id="screen-home-achievements">
+            <div class="screen-back" onclick="closeScreen('home')">Назад</div>
+            <h2 class="section-title">Первые шаги</h2>
+            <div class="achievements-grid">
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">🌱</span>
+                <span class="stat-value">Первое слово</span>
+                <span class="stat-label">Выучить первое слово</span>
+              </div>
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">🔟</span>
+                <span class="stat-value">Первая десятка</span>
+                <span class="stat-label">10 слов в запасе</span>
+              </div>
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">🚀</span>
+                <span class="stat-value">Быстрый старт</span>
+                <span class="stat-label">Заверши сессию из 5 карточек</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">🌙</span>
+                <span class="stat-value">Ночной зубрила</span>
+                <span class="stat-label">Открыть приложение ночью</span>
+              </div>
+            </div>
+            <h2 class="section-title">Коллекционер слов</h2>
+            <div class="achievements-grid">
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">🥉</span>
+                <span class="stat-value">Новичок (Bronze)</span>
+                <span class="stat-label">50 слов</span>
+              </div>
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">🥈</span>
+                <span class="stat-value">Ученик (Silver)</span>
+                <span class="stat-label">150 слов</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">🥇</span>
+                <span class="stat-value">Эрудит (Gold)</span>
+                <span class="stat-label">500 слов</span>
+              </div>
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">💎</span>
+                <span class="stat-value">Словареносец</span>
+                <span class="stat-label">1000 слов</span>
+              </div>
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">🧠</span>
+                <span class="stat-value">Лингвист-маньяк</span>
+                <span class="stat-label">5000 слов</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">📚</span>
+                <span class="stat-value">Коллекционер</span>
+                <span class="stat-label">Заверши 3 набора</span>
+              </div>
+            </div>
+            <h2 class="section-title">Мастер карточек</h2>
+            <div class="achievements-grid">
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">🎯</span>
+                <span class="stat-value">Точно в цель</span>
+                <span class="stat-label">Сессия из 20 карточек без ошибок</span>
+              </div>
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">✅</span>
+                <span class="stat-value">Идеальный круг</span>
+                <span class="stat-label">Дневная цель с точностью 100%</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">⚡</span>
+                <span class="stat-value">Скорострел</span>
+                <span class="stat-label">Ответ за 1,5 сек</span>
+              </div>
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">⏳</span>
+                <span class="stat-value">Терпеливый</span>
+                <span class="stat-label">24 часа в приложении</span>
+              </div>
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">🤹</span>
+                <span class="stat-value">Жонглер</span>
+                <span class="stat-label">Перевернуть 1000 карточек</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">✍️</span>
+                <span class="stat-value">Архивариус</span>
+                <span class="stat-label">Создать 5 своих карточек</span>
+              </div>
+            </div>
+            <h2 class="section-title">Дисциплина</h2>
+            <div class="achievements-grid">
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">🔥</span>
+                <span class="stat-value">Разминка</span>
+                <span class="stat-label">3 дня подряд</span>
+              </div>
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">📅</span>
+                <span class="stat-value">Вхожу во вкус</span>
+                <span class="stat-label">7 дней</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">🌞</span>
+                <span class="stat-value">Привычка</span>
+                <span class="stat-label">21 день</span>
+              </div>
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">🦾</span>
+                <span class="stat-value">Железная воля</span>
+                <span class="stat-label">50 дней</span>
+              </div>
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">🏅</span>
+                <span class="stat-value">Полгода English'a</span>
+                <span class="stat-label">100 дней</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">🌍</span>
+                <span class="stat-value">Преданность</span>
+                <span class="stat-label">365 дней</span>
+              </div>
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">❄️</span>
+                <span class="stat-value">Фрустрация</span>
+                <span class="stat-label">Использовать заморозку стрика</span>
+              </div>
+            </div>
+            <h2 class="section-title">Социальные</h2>
+            <div class="achievements-grid">
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">🤝</span>
+                <span class="stat-value">Приведи друга</span>
+                <span class="stat-label">1 реферал</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">🌳</span>
+                <span class="stat-value">Садовод</span>
+                <span class="stat-label">3 друга</span>
+              </div>
+              <div class="achievement-card pink inactive">
+                <span class="stat-icon">🎉</span>
+                <span class="stat-value">Английский клуб</span>
+                <span class="stat-label">5 друзей</span>
+              </div>
+            </div>
+            <h2 class="section-title">Секретные</h2>
+            <div class="achievements-grid">
+              <div class="achievement-card mint inactive">
+                <span class="stat-icon">🦖</span>
+                <span class="stat-value">Динозавр</span>
+                <span class="stat-label">Скрыто</span>
+              </div>
+              <div class="achievement-card orange inactive">
+                <span class="stat-icon">🗣️</span>
+                <span class="stat-value">Полиглот</span>
+                <span class="stat-label">Скрыто</span>
+              </div>
+            </div>
+            <!-- список достижений -->
+          </div>
+        </div>
+      </section>
+
+      <!-- WORDS TAB -->
+      <section class="tab-panel" id="panel-words">
+        <div class="words-container">
+
+          <h2 class="section-title">Свои списки</h2>
+          <div class="theme-list">
+            <div class="theme-card">
+              <div class="theme-icon travel">✈️</div>
+              <div class="theme-info">
+                <span class="theme-name">Мой1</span>
+                <span class="theme-count">24 words</span>
+              </div>
+              <div class="theme-progress">
+                <div class="progress-bar small">
+                  <div class="progress-fill" style="width: 25%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="section-title">По уровню</h2>
+          <div class="level-grid">
+            <div class="level-card a1">
+              <div class="mascot">🐣</div>
+              <span class="level-name">A1</span>
+              <span class="level-desc">Beginner</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="level-card a2">
+              <div class="mascot">🐥</div>
+              <span class="level-name">A2</span>
+              <span class="level-desc">Elementary</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 45%"></div>
+              </div>
+            </div>
+            <div class="level-card b1">
+              <div class="mascot">🦊</div>
+              <span class="level-name">B1</span>
+              <span class="level-desc">Intermediate</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 20%"></div>
+              </div>
+            </div>
+            <div class="level-card b2 locked">
+              <div class="mascot">🦁</div>
+              <span class="level-name">B2</span>
+              <span class="level-desc">Upper-Int</span>
+              <div class="lock-icon">🔒</div>
+            </div>
+          </div>
+
+          <h2 class="section-title">Темы</h2>
+          <div class="theme-list">
+            <div class="theme-card">
+              <div class="theme-icon travel">✈️</div>
+              <div class="theme-info">
+                <span class="theme-name">Travel</span>
+                <span class="theme-count">24 words</span>
+              </div>
+              <div class="theme-progress">
+                <div class="progress-bar small">
+                  <div class="progress-fill" style="width: 25%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="theme-card">
+              <div class="theme-icon food">🍕</div>
+              <div class="theme-info">
+                <span class="theme-name">Food & Drinks</span>
+                <span class="theme-count">32 words</span>
+              </div>
+              <div class="theme-progress">
+                <div class="progress-bar small">
+                  <div class="progress-fill" style="width: 85%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="theme-card">
+              <div class="theme-icon business">💼</div>
+              <div class="theme-info">
+                <span class="theme-name">Business</span>
+                <span class="theme-count">28 words</span>
+              </div>
+              <div class="theme-progress">
+                <div class="progress-bar small">
+                  <div class="progress-fill" style="width: 30%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="theme-card">
+              <div class="theme-icon emotions">💭</div>
+              <div class="theme-info">
+                <span class="theme-name">Emotions</span>
+                <span class="theme-count">20 words</span>
+              </div>
+              <div class="theme-progress">
+                <div class="progress-bar small">
+                  <div class="progress-fill" style="width: 50%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="theme-card">
+              <div class="theme-icon home">🏠</div>
+              <div class="theme-info">
+                <span class="theme-name">Home & Family</span>
+                <span class="theme-count">36 words</span>
+              </div>
+              <div class="theme-progress">
+                <div class="progress-bar small">
+                  <div class="progress-fill" style="width: 70%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRAMMAR TAB -->
+      <section class="tab-panel" id="panel-grammar">
+        <div class="grammar-container">
+          <div class="coming-soon">
+            <div class="lock-animation">
+              <span class="big-lock">🔒</span>
+              <div class="zzz">
+                <span>Z</span>
+                <span>z</span>
+                <span>z</span>
+              </div>
+            </div>
+            <h2 class="coming-title">Coming Soon!</h2>
+            <p class="coming-desc">Grammar lessons are being prepared by our cute owls</p>
+            <div class="premium-badge">
+              <span class="crown">👑</span>
+              <span>Premium Feature</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS TAB -->
+      <section class="tab-panel" id="panel-settings">
+        <div class="settings-container">
+          <h2 class="settings-title">Settings</h2>
+          
+          <div class="settings-list">
+            <div class="settings-card">
+              <div class="settings-icon orange">🎯</div>
+              <div class="settings-info">
+                <span class="settings-name">Daily Goal</span>
+                <span class="settings-value">10 words</span>
+              </div>
+              <span class="chevron">›</span>
+            </div>
+            
+            <div class="settings-card">
+              <div class="settings-icon pink">🔔</div>
+              <div class="settings-info">
+                <span class="settings-name">Reminders</span>
+                <span class="settings-value">9:00 AM</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            
+            <div class="settings-card">
+              <div class="settings-icon lavender">🌙</div>
+              <div class="settings-info">
+                <span class="settings-name">Theme</span>
+                <span class="settings-value">Dark</span>
+              </div>
+              <span class="chevron">›</span>
+            </div>
+            
+            <div class="settings-card">
+              <div class="settings-icon mint">👥</div>
+              <div class="settings-info">
+                <span class="settings-name">Invite Friend</span>
+                <span class="settings-value">Get bonus!</span>
+              </div>
+              <span class="chevron">›</span>
+            </div>
+            
+            <div class="settings-card premium">
+              <div class="settings-icon gold">👑</div>
+              <div class="settings-info">
+                <span class="settings-name">Buy Premium</span>
+                <span class="settings-value premium-text">Unlock all features</span>
+              </div>
+              <div class="sparkles">✨</div>
+            </div>
+            
+            <div class="settings-card danger">
+              <div class="settings-icon red">🗑️</div>
+              <div class="settings-info">
+                <span class="settings-name">Reset Progress</span>
+                <span class="settings-value danger-text">Start over</span>
+              </div>
+              <span class="chevron">›</span>
+            </div>
+          </div>
+
+          <p class="version">WordPal v1.0.0</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-tab="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Главная</span>
+      </button>
+      <button class="nav-item" data-tab="words">
+        <span class="nav-icon">📝</span>
+        <span class="nav-label">Слова</span>
+      </button>
+      <button class="nav-item" data-tab="grammar">
+        <span class="nav-icon">📖</span>
+        <span class="nav-label">Грамматика</span>
+      </button>
+      <button class="nav-item" data-tab="settings">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Настройки</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

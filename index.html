@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="app">
     <!-- Background decoration -->
@@ -16,7 +18,7 @@
 
     <!-- Tab Content -->
     <main class="tab-content">
-      
+
       <!-- HOME TAB -->
       <section class="tab-panel active" id="panel-home">
         <div class="home-container">
@@ -37,13 +39,18 @@
               </div>
             </div>
 
+            <div id="tg-debug"
+              style="background:white; color:black; padding:10px; font-size:14px; border:2px solid red;">
+              Проверка Telegram...
+            </div>
+
             <!-- Level Progress Circle -->
             <div class="level-section">
               <div class="level-circle">
                 <svg class="progress-ring" viewBox="0 0 200 200">
                   <circle class="progress-bg" cx="100" cy="100" r="90" />
-                  <circle class="progress-fill" cx="100" cy="100" r="90" 
-                    stroke-dasharray="565.48" stroke-dashoffset="169.64" />
+                  <circle class="progress-fill" cx="100" cy="100" r="90" stroke-dasharray="565.48"
+                    stroke-dashoffset="169.64" />
                 </svg>
                 <div class="level-info">
                   <span class="level-label">Level</span>
@@ -401,7 +408,7 @@
       <section class="tab-panel" id="panel-settings">
         <div class="settings-container">
           <h2 class="settings-title">Settings</h2>
-          
+
           <div class="settings-list">
             <div class="settings-card">
               <div class="settings-icon orange">🎯</div>
@@ -411,7 +418,7 @@
               </div>
               <span class="chevron">›</span>
             </div>
-            
+
             <div class="settings-card">
               <div class="settings-icon pink">🔔</div>
               <div class="settings-info">
@@ -423,7 +430,7 @@
                 <span class="toggle-slider"></span>
               </label>
             </div>
-            
+
             <div class="settings-card">
               <div class="settings-icon lavender">🌙</div>
               <div class="settings-info">
@@ -432,7 +439,7 @@
               </div>
               <span class="chevron">›</span>
             </div>
-            
+
             <div class="settings-card">
               <div class="settings-icon mint">👥</div>
               <div class="settings-info">
@@ -441,7 +448,7 @@
               </div>
               <span class="chevron">›</span>
             </div>
-            
+
             <div class="settings-card premium">
               <div class="settings-icon gold">👑</div>
               <div class="settings-info">
@@ -450,7 +457,7 @@
               </div>
               <div class="sparkles">✨</div>
             </div>
-            
+
             <div class="settings-card danger">
               <div class="settings-icon red">🗑️</div>
               <div class="settings-info">
@@ -489,6 +496,19 @@
   </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
+  <script>
+    if (window.Telegram && window.Telegram.WebApp) {
+      const user = window.Telegram.WebApp.initDataUnsafe.user;
+      document.getElementById('tg-debug').innerHTML =
+        '<b>Данные от Telegram:</b><br>' +
+        'ID: ' + (user ? user.id : 'нет') + '<br>' +
+        'Имя: ' + (user ? user.first_name : 'нет') + '<br>' +
+        'Username: ' + (user ? user.username : 'нет');
+    } else {
+      document.getElementById('tg-debug').innerHTML = '❌ Telegram WebApp API не доступен (открыто не из бота?)';
+    }
+  </script>
   <script src="app.js"></script>
 </body>
+
 </html>

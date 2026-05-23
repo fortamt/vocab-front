@@ -1,14 +1,22 @@
-    // Tab switching
-    //document.querySelectorAll('.nav-item').forEach(btn => {
-    //  btn.addEventListener('click', () => {
-    //    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    //    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    //    btn.classList.add('active');
-    //    document.getElementById(btn.dataset.tab).classList.add('active');
-    //  });
-    //});
+const { use } = require("react");
 
-    // Стек экранов для каждой вкладки
+if (window.Telegram && window.Telegram.WebApp) {
+  const user = window.Telegram.WebApp.initDataUnsafe.user;
+  document.getElementById('tg-debug').innerHTML =
+    '<b>Данные от Telegram:</b><br>' +
+    'ID: ' + (user ? user.id : 'нет') + '<br>' +
+    'Имя: ' + (user ? user.first_name : 'нет') + '<br>' +
+    'Username: ' + (user ? user.username : 'нет');
+} else {
+  document.getElementById('tg-debug').innerHTML = '❌ Telegram WebApp API не доступен (открыто не из бота?)';
+}
+
+if (window.Telegram && window.Telegram.WebApp) {
+  const user = windows.Telegram.initDataUnsafe.user;
+  document.getElementById('avatar').innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
+  document.getElementById('name').textContent = `${user.first_name} ${user.last_name}`;
+  
+}
 
 const screenStacks = {
   home: ['main'],

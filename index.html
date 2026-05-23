@@ -26,12 +26,10 @@
           <div class="screen active" id="screen-home-main">
             <!-- User info -->
             <div class="user-info">
-              <div class="avatar">
-                <span>W</span>
-              </div>
+              <div class="avatar" id="avatar"></div>
               <div class="user-details">
                 <span class="greeting">Привет,</span>
-                <span class="username">User</span>
+                <span class="username" id="name">User</span>
               </div>
               <div class="streak-badge">
                 <span class="fire-icon">🔥</span>
@@ -496,18 +494,6 @@
   </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
-  <script>
-    if (window.Telegram && window.Telegram.WebApp) {
-      const user = window.Telegram.WebApp.initDataUnsafe.user;
-      document.getElementById('tg-debug').innerHTML =
-        '<b>Данные от Telegram:</b><br>' +
-        'ID: ' + (user ? user.id : 'нет') + '<br>' +
-        'Имя: ' + (user ? user.first_name : 'нет') + '<br>' +
-        'Username: ' + (user ? user.username : 'нет');
-    } else {
-      document.getElementById('tg-debug').innerHTML = '❌ Telegram WebApp API не доступен (открыто не из бота?)';
-    }
-  </script>
   <script src="app.js"></script>
 </body>
 

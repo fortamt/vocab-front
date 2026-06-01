@@ -17,6 +17,47 @@ const screenStacks = {
   settings: ['main']
 };
 
+async function loadList(listId) {
+  const container = document.getElementById('subscreen-list');
+  container.textContent = 'Загрузка...';
+
+  try {
+    const response = await fetch(`api/${listId}`);
+    if (!responde.ok) throw new Error('Server error');
+
+    const data = await response.json();
+
+    if (!data || data.length === 0) {
+      throw new Error('empty list')
+    }
+
+    renderList(container, data);
+  } catch (error) {
+    console.error('loading error:', error)
+  }
+}
+
+function renderList(container, list) {
+  container.innerHTML = '';
+
+  words.forEach(list => {
+    const card = document.createElement('div');
+    card.className = 'theme-card';
+    card.innerHTML = `
+      <div class="theme-icon home">${list.icon}</div>
+      <div class="theme-info">
+        <span class="theme-name">${list.name}</span>
+        <span class="theme-count">${list.count}</span>
+      </div>
+      <div class="theme-progress">
+        <div class="progress-bar small">
+          <div class="progress-fill" style="width: 70%"></div>
+        </div>
+      </div>`;
+    container.appendChild(card);
+  })
+}
+
 // Переключение вкладок (адаптировано под твой data-tab)
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -41,7 +82,10 @@ function switchTab(tabId) {
 }
 
 // Открыть новый экран внутри вкладки
-function openScreen(tabId, screenId) {
+function openScreen(tabId, screenId, listName = null) {
+  if (screenId === 'subscreen') {
+    loadList(listName);
+  }
   const stack = screenStacks[tabId];
   stack.push(screenId); // добавили в стек
   showScreen(tabId, screenId);

@@ -26,7 +26,9 @@
           <div class="screen active" id="screen-home-main">
             <!-- User info -->
             <div class="user-info">
-              <div class="avatar" id="avatar"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr-oM39OqBCgUncMTs88Hk7fWuEPiihQaxmw&s" alt=""></div>
+              <div class="avatar" id="avatar"><img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr-oM39OqBCgUncMTs88Hk7fWuEPiihQaxmw&s"
+                  alt=""></div>
               <div class="user-details">
                 <span class="greeting">Привет,</span>
                 <span class="username" id="name">User</span>
@@ -258,120 +260,127 @@
       <!-- WORDS TAB -->
       <section class="tab-panel" id="panel-words">
         <div class="words-container">
-
-          <h2 class="section-title">Свои списки</h2>
-          <div class="theme-list">
-            <div class="theme-card">
-              <div class="theme-icon travel">✈️</div>
-              <div class="theme-info">
-                <span class="theme-name">Мой1</span>
-                <span class="theme-count">24 words</span>
+          <div class="screen" id="screen-words-main">
+            <h2 class="section-title">Свои списки</h2>
+            <div class="theme-list">
+              <div class="theme-card">
+                <div class="theme-icon travel">✈️</div>
+                <div class="theme-info">
+                  <span class="theme-name">Мой1</span>
+                  <span class="theme-count">24 words</span>
+                </div>
+                <div class="theme-progress">
+                  <div class="progress-bar small">
+                    <div class="progress-fill" style="width: 25%"></div>
+                  </div>
+                </div>
               </div>
-              <div class="theme-progress">
-                <div class="progress-bar small">
-                  <div class="progress-fill" style="width: 25%"></div>
+            </div>
+
+            <h2 class="section-title">По уровню</h2>
+            <div class="level-grid">
+              <div class="level-card a1" onclick="openScreen('words', 'subscreen', 'A1')">
+                <div class="mascot">🐣</div>
+                <span class="level-name">A1</span>
+                <span class="level-desc">Beginner</span>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 80%"></div>
+                </div>
+              </div>
+              <div class="level-card a2" onclick="openScreen('words', 'subscreen')">
+                <div class="mascot">🐥</div>
+                <span class="level-name">A2</span>
+                <span class="level-desc">Elementary</span>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 45%"></div>
+                </div>
+              </div>
+              <div class="level-card b1" onclick="openScreen('words', 'subscreen')">
+                <div class="mascot">🦊</div>
+                <span class="level-name">B1</span>
+                <span class="level-desc">Intermediate</span>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 20%"></div>
+                </div>
+              </div>
+              <div class="level-card b2 locked" onclick="openScreen('words', 'subscreen', 'B2')">
+                <div class="mascot">🦁</div>
+                <span class="level-name">B2</span>
+                <span class="level-desc">Upper-Int</span>
+                <div class="lock-icon">🔒</div>
+              </div>
+            </div>
+
+            <h2 class="section-title">Темы</h2>
+            <div class="theme-list">
+              <div class="theme-card">
+                <div class="theme-icon mint">✈️</div>
+                <div class="theme-info">
+                  <span class="theme-name">Travel</span>
+                  <span class="theme-count">24 words</span>
+                </div>
+                <div class="theme-progress">
+                  <div class="progress-bar small">
+                    <div class="progress-fill" style="width: 25%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="theme-card">
+                <div class="theme-icon orange">🍕</div>
+                <div class="theme-info">
+                  <span class="theme-name">Food & Drinks</span>
+                  <span class="theme-count">32 words</span>
+                </div>
+                <div class="theme-progress">
+                  <div class="progress-bar small">
+                    <div class="progress-fill" style="width: 85%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="theme-card">
+                <div class="theme-icon lavender">💼</div>
+                <div class="theme-info">
+                  <span class="theme-name">Business</span>
+                  <span class="theme-count">28 words</span>
+                </div>
+                <div class="theme-progress">
+                  <div class="progress-bar small">
+                    <div class="progress-fill" style="width: 30%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="theme-card">
+                <div class="theme-icon pink">💭</div>
+                <div class="theme-info">
+                  <span class="theme-name">Emotions</span>
+                  <span class="theme-count">20 words</span>
+                </div>
+                <div class="theme-progress">
+                  <div class="progress-bar small">
+                    <div class="progress-fill" style="width: 50%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="theme-card">
+                <div class="theme-icon home">🏠</div>
+                <div class="theme-info">
+                  <span class="theme-name">Home & Family</span>
+                  <span class="theme-count">36 words</span>
+                </div>
+                <div class="theme-progress">
+                  <div class="progress-bar small">
+                    <div class="progress-fill" style="width: 70%"></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <h2 class="section-title">По уровню</h2>
-          <div class="level-grid">
-            <div class="level-card a1">
-              <div class="mascot">🐣</div>
-              <span class="level-name">A1</span>
-              <span class="level-desc">Beginner</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 80%"></div>
-              </div>
-            </div>
-            <div class="level-card a2">
-              <div class="mascot">🐥</div>
-              <span class="level-name">A2</span>
-              <span class="level-desc">Elementary</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 45%"></div>
-              </div>
-            </div>
-            <div class="level-card b1">
-              <div class="mascot">🦊</div>
-              <span class="level-name">B1</span>
-              <span class="level-desc">Intermediate</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 20%"></div>
-              </div>
-            </div>
-            <div class="level-card b2 locked">
-              <div class="mascot">🦁</div>
-              <span class="level-name">B2</span>
-              <span class="level-desc">Upper-Int</span>
-              <div class="lock-icon">🔒</div>
-            </div>
+          <div class="screen" id="screen-words-subscreen">
+            <div class="screen-back" onclick="closeScreen('words')">Назад</div>
+            <div class="theme-list" id="subscreen-list"></div>
           </div>
 
-          <h2 class="section-title">Темы</h2>
-          <div class="theme-list">
-            <div class="theme-card">
-              <div class="theme-icon travel">✈️</div>
-              <div class="theme-info">
-                <span class="theme-name">Travel</span>
-                <span class="theme-count">24 words</span>
-              </div>
-              <div class="theme-progress">
-                <div class="progress-bar small">
-                  <div class="progress-fill" style="width: 25%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="theme-card">
-              <div class="theme-icon food">🍕</div>
-              <div class="theme-info">
-                <span class="theme-name">Food & Drinks</span>
-                <span class="theme-count">32 words</span>
-              </div>
-              <div class="theme-progress">
-                <div class="progress-bar small">
-                  <div class="progress-fill" style="width: 85%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="theme-card">
-              <div class="theme-icon business">💼</div>
-              <div class="theme-info">
-                <span class="theme-name">Business</span>
-                <span class="theme-count">28 words</span>
-              </div>
-              <div class="theme-progress">
-                <div class="progress-bar small">
-                  <div class="progress-fill" style="width: 30%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="theme-card">
-              <div class="theme-icon emotions">💭</div>
-              <div class="theme-info">
-                <span class="theme-name">Emotions</span>
-                <span class="theme-count">20 words</span>
-              </div>
-              <div class="theme-progress">
-                <div class="progress-bar small">
-                  <div class="progress-fill" style="width: 50%"></div>
-                </div>
-              </div>
-            </div>
-            <div class="theme-card">
-              <div class="theme-icon home">🏠</div>
-              <div class="theme-info">
-                <span class="theme-name">Home & Family</span>
-                <span class="theme-count">36 words</span>
-              </div>
-              <div class="theme-progress">
-                <div class="progress-bar small">
-                  <div class="progress-fill" style="width: 70%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 

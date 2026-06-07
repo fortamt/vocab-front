@@ -12,7 +12,7 @@ if (window.Telegram && window.Telegram.WebApp) {
 }
 
 // --- Конфигурация ---
-const API_BASE_URL = 'http://127.0.0.1:8080';
+const API_BASE_URL = 'https://a931-176-113-164-251.ngrok-free.app';
 
 // Стек экранов для каждой вкладки
 const screenStacks = {

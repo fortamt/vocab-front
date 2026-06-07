@@ -42,7 +42,11 @@ async function loadList(listPrefix) {
   container.textContent = 'Загрузка...';
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/list/${listPrefix}`);
+    const response = await fetch(`${API_BASE_URL}/api/list/${listPrefix}`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
     if (!response.ok) throw new Error('Server error');
     const data = await response.json();
     if (!data || data.length === 0) throw new Error('empty list');
@@ -108,7 +112,11 @@ async function openScreen(tabId, screenId, listPrefix = null, listName = null) {
   // 2. Если открывается экран карточек – загружаем слова и запускаем игру
   else if (screenId === 'cards' && listName) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/word/${listName}`);
+      const response = await fetch(`${API_BASE_URL}/api/word/${listName}`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
       if (!response.ok) throw new Error('Server error');
       const data = await response.json();
       if (!data || data.length === 0) throw new Error('empty list');
@@ -174,7 +182,7 @@ function renderCard(wordObj) {
 // Простейшая защита от XSS
 function escapeHtml(str) {
   if (!str) return '';
-  return str.replace(/[&<>]/g, function(m) {
+  return str.replace(/[&<>]/g, function (m) {
     if (m === '&') return '&amp;';
     if (m === '<') return '&lt;';
     if (m === '>') return '&gt;';

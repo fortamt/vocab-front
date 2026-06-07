@@ -42,7 +42,7 @@ async function loadList(listPrefix) {
   container.textContent = 'Загрузка...';
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/list/${listPrefix}`, {
+    const response = await apiFetch(`${API_BASE_URL}/api/list/${listPrefix}`, {
       headers: {
         'ngrok-skip-browser-warning': 'true'
       }
@@ -83,6 +83,26 @@ function renderList(container, list) {
   });
 }
 
+const apiFetch = async (url, options = {}) => {
+  const initData = window.Telegram?.WebApp?.initData;
+  if (!initData) {
+    console.error('Ошибка: initData не доступен');
+    throw new Error('Telegram initData not available');
+  }
+
+  const headers = {
+    ...options.headers,
+    'X-Telegram-Init-Data': initData
+  };
+
+  // Чтобы избежать дублирования заголовка Content-Type, если он уже был установлен
+  if (options.body && !(options.headers && options.headers['Content-Type'])) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  return fetch(url, { ...options, headers });
+};
+
 // --- Навигация по вкладкам ---
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -112,7 +132,7 @@ async function openScreen(tabId, screenId, listPrefix = null, listName = null) {
   // 2. Если открывается экран карточек – загружаем слова и запускаем игру
   else if (screenId === 'cards' && listName) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/word/${listName}`, {
+      const response = await apiFetch(`${API_BASE_URL}/api/word/${listName}`, {
         headers: {
           'ngrok-skip-browser-warning': 'true'
         }

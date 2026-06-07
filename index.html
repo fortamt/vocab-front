@@ -287,7 +287,7 @@
                   <div class="progress-fill" style="width: 80%"></div>
                 </div>
               </div>
-              <div class="level-card a2" onclick="openScreen('words', 'subscreen')">
+              <div class="level-card a2" onclick="openScreen('words', 'subscreen', 'A2')">
                 <div class="mascot">🐥</div>
                 <span class="level-name">A2</span>
                 <span class="level-desc">Elementary</span>
@@ -295,7 +295,7 @@
                   <div class="progress-fill" style="width: 45%"></div>
                 </div>
               </div>
-              <div class="level-card b1" onclick="openScreen('words', 'subscreen')">
+              <div class="level-card b1" onclick="openScreen('words', 'subscreen', 'B1')">
                 <div class="mascot">🦊</div>
                 <span class="level-name">B1</span>
                 <span class="level-desc">Intermediate</span>
@@ -379,6 +379,11 @@
           <div class="screen" id="screen-words-subscreen">
             <div class="screen-back" onclick="closeScreen('words')">Назад</div>
             <div class="theme-list" id="subscreen-list"></div>
+          </div>
+
+          <div class="screen" id="screen-words-cards">
+            <div class="screen-back" onclick="closeScreen('words')">Назад</div>
+            <div class="deck" id="deck"></div>
           </div>
 
         </div>

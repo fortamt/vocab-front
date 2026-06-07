@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Слова с переводом — свайп, переворот и подсказки</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .deck {
+      position: relative;
+      width: 90vw;
+      max-width: 350px;
+      height: 480px;
+      perspective: 800px;
+    }
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    /* Анимация-подсказка при первом показе */
+    .card.hint-sway {
+      animation: sway 1.2s ease-in-out 2; /* 2 цикла */
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes sway {
+      0%   { transform: translateX(0) rotate(0deg); }
+      15%  { transform: translateX(12px) rotate(2deg); }
+      30%  { transform: translateX(-12px) rotate(-2deg); }
+      45%  { transform: translateX(10px) rotate(1.5deg); }
+      60%  { transform: translateX(-10px) rotate(-1.5deg); }
+      75%  { transform: translateX(5px) rotate(0.5deg); }
+      90%  { transform: translateX(-5px) rotate(-0.5deg); }
+      100% { transform: translateX(0) rotate(0deg); }
+    }
+
+    /* Состояния свайпа */
+    .card.swiped-left {
+      transform: translateX(-150%) rotate(-20deg) !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .card.swiped-right {
+      transform: translateX(150%) rotate(20deg) !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 3D-переворот */
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease;
+      transform-style: preserve-3d;
+      border-radius: 16px;
+    }
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 600;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .front { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+    .back  { background: linear-gradient(135deg, #fc4a1a, #f7b733); transform: rotateY(180deg); }
+
+    .word-label {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .word-text {
+      font-size: 36px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    .hint {
+      margin-top: 20px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    /* Индикаторы свайпа */
+    .indicator {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 26px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .indicator.left {
+      left: 25px;
+      color: #ff4d4d;
+    }
+    .indicator.right {
+      right: 25px;
+      color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+<div class="deck" id="deck"></div>
+
+<script>
+  // Тестовые слова – замените на данные из вашего API
+  const words = [
+    { word: 'Apple', translation: 'Яблоко' },
+    { word: 'Dog', translation: 'Собака' },
+    { word: 'House', translation: 'Дом' },
+    { word: 'Car', translation: 'Машина' },
+    { word: 'Book', translation: 'Книга' },
+    { word: 'Sun', translation: 'Солнце' },
+    { word: 'Water', translation: 'Вода' },
+    { word: 'Friend', translation: 'Друг' },
+  ];
+
+  const deck = document.getElementById('deck');
+  let currentIndex = 0;
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let currentCard = null;
+  const SWIPE_THRESHOLD = 80;
+  const MAX_OPACITY_DISTANCE = 100; // расстояние, при котором индикатор становится полностью непрозрачным
+
+  // Создаёт DOM-элемент карточки
+  function renderCard(wordObj) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="face front">
+          <span class="word-label">Слово</span>
+          <span class="word-text">${wordObj.word}</span>
+          <span class="hint">Нажмите для перевода</span>
+        </div>
+        <div class="face back">
+          <span class="word-label">Перевод</span>
+          <span class="word-text">${wordObj.translation}</span>
+          <span class="hint">Нажмите, чтобы вернуть</span>
+        </div>
+      </div>
+      <div class="indicator left">НЕ ЗНАЮ</div>
+      <div class="indicator right">ЗНАЮ</div>
+    `;
+    return card;
+  }
+
+  // Загружает следующую карточку в колоду
+  function loadNextCard() {
+    deck.innerHTML = '';
+    if (currentIndex >= words.length) {
+      deck.innerHTML = '<div style="text-align:center; padding:40px; font-size:24px;">Слова закончились 🎉</div>';
+      return;
+    }
+
+    const card = renderCard(words[currentIndex]);
+    deck.appendChild(card);
+    currentCard = card;
+    attachEvents(card);
+
+    // Первая карточка получает покачивающуюся подсказку
+    if (currentIndex === 0) {
+      card.classList.add('hint-sway');
+    }
+  }
+
+  function attachEvents(card) {
+    card.addEventListener('mousedown', onStart);
+    card.addEventListener('touchstart', onStart, { passive: false });
+  }
+
+  function onStart(e) {
+    if (e.target.closest('.card') !== currentCard) return;
+
+    isDragging = true;
+    const point = e.touches ? e.touches[0] : e;
+    startX = point.clientX;
+    startY = point.clientY;
+
+    // Убираем анимацию-подсказку при первом касании
+    currentCard.classList.remove('hint-sway');
+    currentCard.style.transition = 'none';
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+  }
+
+  function onMove(e) {
+    if (!isDragging || !currentCard) return;
+    e.preventDefault();
+
+    const point = e.touches ? e.touches[0] : e;
+    const diffX = point.clientX - startX;
+    const diffY = point.clientY - startY;
+    const rotate = diffX * 0.05;
+
+    currentCard.style.transform = `translate(${diffX}px, ${diffY}px) rotate(${rotate}deg)`;
+
+    // Показываем индикаторы с плавной прозрачностью
+    const leftIndicator = currentCard.querySelector('.indicator.left');
+    const rightIndicator = currentCard.querySelector('.indicator.right');
+    const absDiff = Math.abs(diffX);
+    const opacity = Math.min(1, absDiff / MAX_OPACITY_DISTANCE);
+
+    if (diffX > 0) {
+      leftIndicator.style.opacity = 0;
+      rightIndicator.style.opacity = opacity;
+    } else if (diffX < 0) {
+      leftIndicator.style.opacity = opacity;
+      rightIndicator.style.opacity = 0;
+    } else {
+      leftIndicator.style.opacity = 0;
+      rightIndicator.style.opacity = 0;
+    }
+  }
+
+  function onEnd(e) {
+    if (!isDragging || !currentCard) return;
+    isDragging = false;
+
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
+
+    const point = e.changedTouches ? e.changedTouches[0] : e;
+    const diffX = point.clientX - startX;
+    const diffY = point.clientY - startY;
+
+    // Скрываем индикаторы в любом случае
+    const leftIndicator = currentCard.querySelector('.indicator.left');
+    const rightIndicator = currentCard.querySelector('.indicator.right');
+    if (leftIndicator) leftIndicator.style.opacity = 0;
+    if (rightIndicator) rightIndicator.style.opacity = 0;
+
+    // Если почти не двигались — это клик (переворот)
+    if (Math.abs(diffX) < 5 && Math.abs(diffY) < 5) {
+      currentCard.style.transition = 'transform 0.25s ease';
+      currentCard.style.transform = '';
+      currentCard.classList.toggle('flipped');
+      return;
+    }
+
+    // Обрабатываем свайп
+    currentCard.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+
+    if (Math.abs(diffX) > SWIPE_THRESHOLD) {
+      const direction = diffX > 0 ? 'swiped-right' : 'swiped-left';
+      currentCard.classList.add(direction);
+
+      setTimeout(() => {
+        if (currentCard) {
+          currentCard.remove();
+          currentCard = null;
+        }
+        currentIndex++;
+        loadNextCard();
+      }, 250);
+    } else {
+      // Не дотянули – карточка возвращается на место
+      currentCard.style.transform = '';
+    }
+  }
+
+  // Старт
+  loadNextCard();
+</script>
+</body>
+</html>

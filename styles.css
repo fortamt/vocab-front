@@ -1062,3 +1062,162 @@ body {
 svg defs {
   display: none;
 }
+
+.deck {
+  position: relative;
+  width: 90vw;
+  max-width: 350px;
+  height: 480px;
+  perspective: 800px;
+}
+
+.card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Анимация-подсказка при первом показе */
+.card.hint-sway {
+  animation: sway 1.2s ease-in-out 2;
+  /* 2 цикла */
+  animation-fill-mode: forwards;
+}
+
+@keyframes sway {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  15% {
+    transform: translateX(12px) rotate(2deg);
+  }
+
+  30% {
+    transform: translateX(-12px) rotate(-2deg);
+  }
+
+  45% {
+    transform: translateX(10px) rotate(1.5deg);
+  }
+
+  60% {
+    transform: translateX(-10px) rotate(-1.5deg);
+  }
+
+  75% {
+    transform: translateX(5px) rotate(0.5deg);
+  }
+
+  90% {
+    transform: translateX(-5px) rotate(-0.5deg);
+  }
+
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+/* Состояния свайпа */
+.card.swiped-left {
+  transform: translateX(-150%) rotate(-20deg) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card.swiped-right {
+  transform: translateX(150%) rotate(20deg) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 3D-переворот */
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+  transform-style: preserve-3d;
+  border-radius: 16px;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.front {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.back {
+  background: linear-gradient(135deg, #fc4a1a, #f7b733);
+  transform: rotateY(180deg);
+}
+
+.word-label {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.word-text {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.hint {
+  margin-top: 20px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Индикаторы свайпа */
+.indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 26px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.indicator.left {
+  left: 25px;
+  color: #ff4d4d;
+}
+
+.indicator.right {
+  right: 25px;
+  color: #4caf50;
+}

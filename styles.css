@@ -1065,85 +1065,43 @@ svg defs {
 
 .deck {
   position: relative;
-  width: 90vw;
-  max-width: 350px;
-  height: 480px;
-  perspective: 800px;
+  width: 100%;
+  height: 380px;
+  perspective: 1200px;
+  margin-bottom: 30px;
 }
 
 .card {
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 28px;
   cursor: pointer;
-  user-select: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.3s ease, opacity 0.25s ease;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3);
 }
 
-/* Анимация-подсказка при первом показе */
-.card.hint-sway {
-  animation: sway 1.2s ease-in-out 2;
-  /* 2 цикла */
-  animation-fill-mode: forwards;
-}
-
-@keyframes sway {
-  0% {
-    transform: translateX(0) rotate(0deg);
-  }
-
-  15% {
-    transform: translateX(12px) rotate(2deg);
-  }
-
-  30% {
-    transform: translateX(-12px) rotate(-2deg);
-  }
-
-  45% {
-    transform: translateX(10px) rotate(1.5deg);
-  }
-
-  60% {
-    transform: translateX(-10px) rotate(-1.5deg);
-  }
-
-  75% {
-    transform: translateX(5px) rotate(0.5deg);
-  }
-
-  90% {
-    transform: translateX(-5px) rotate(-0.5deg);
-  }
-
-  100% {
-    transform: translateX(0) rotate(0deg);
-  }
-}
-
-/* Состояния свайпа */
-.card.swiped-left {
-  transform: translateX(-150%) rotate(-20deg) !important;
+/* Анимация уезда */
+.card.slide-left {
+  transform: translateX(-150%) rotate(-15deg);
   opacity: 0;
   pointer-events: none;
 }
 
-.card.swiped-right {
-  transform: translateX(150%) rotate(20deg) !important;
+.card.slide-right {
+  transform: translateX(150%) rotate(15deg);
   opacity: 0;
   pointer-events: none;
 }
 
-/* 3D-переворот */
+/* 3D переворот */
 .card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s;
   transform-style: preserve-3d;
-  border-radius: 16px;
+  border-radius: 28px;
 }
 
 .card.flipped .card-inner {
@@ -1155,69 +1113,134 @@ svg defs {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 16px;
+  border-radius: 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px;
+  padding: 20px;
   text-align: center;
-  font-size: 28px;
-  font-weight: 600;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .front {
   background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
 }
 
 .back {
   background: linear-gradient(135deg, #fc4a1a, #f7b733);
+  color: white;
   transform: rotateY(180deg);
 }
 
 .word-label {
   font-size: 14px;
-  opacity: 0.85;
-  margin-bottom: 10px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  opacity: 0.8;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
 }
 
 .word-text {
-  font-size: 36px;
-  font-weight: 700;
-  margin: 10px 0;
+  font-size: 42px;
+  font-weight: 800;
+  margin: 15px 0;
 }
 
 .hint {
-  margin-top: 20px;
-  font-size: 14px;
-  opacity: 0.7;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 5px 12px;
+  border-radius: 30px;
 }
 
-/* Индикаторы свайпа */
-.indicator {
+.buttons {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+button.dontknow,
+.know {
+  flex: 1;
+  max-width: 140px;
+  padding: 14px 0;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  transition: 0.1s linear;
+  color: white;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.know {
+  background: #2ecc71;
+  box-shadow: 0 5px 12px rgba(46, 204, 113, 0.4);
+}
+
+.dontknow {
+  background: #e74c3c;
+  box-shadow: 0 5px 12px rgba(231, 76, 60, 0.4);
+}
+
+.card-progress-container {
+  position: relative;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 40px;
+  height: 25px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.card-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
+  border-radius: 40px;
+  transition: width 0.3s ease-out;
+  z-index: 1;
+}
+
+.card-progress-text {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 26px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  opacity: 0;
-  transition: opacity 0.1s ease;
-  pointer-events: none;
-  z-index: 10;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: #2c3e50;
+  font-weight: bold;
+  font-size: 16px;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
 }
 
-.indicator.left {
-  left: 25px;
-  color: #ff4d4d;
+.end {
+  background: #2c3e50;
+  padding: 30px;
+  border-radius: 32px;
+  text-align: center;
+  color: white;
 }
 
-.indicator.right {
-  right: 25px;
-  color: #4caf50;
+.restart {
+  margin-top: 15px;
+  background: #f1c40f;
+  color: #2c3e50;
+  padding: 8px 20px;
+  border-radius: 40px;
+  cursor: pointer;
+  display: inline-block;
 }

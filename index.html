@@ -382,8 +382,16 @@
           </div>
 
           <div class="screen" id="screen-words-cards">
-            <div class="screen-back" onclick="closeScreen('words')">Назад</div>
+            <div class="screen-back" onclick="closeScreen('words')">Прервать сессию</div>
+            <div class="card-progress-container">
+              <div class="card-progress-fill" id="progressFill"></div>
+              <div class="card-progress-text" id="progressText">0 / 0</div>
+            </div>
             <div class="deck" id="deck"></div>
+            <div class="buttons">
+              <button class="dontknow" id="btnNotKnow">❌ НЕ ЗНАЮ</button>
+              <button class="know" id="btnKnow">✅ ЗНАЮ</button>
+            </div>
           </div>
 
         </div>

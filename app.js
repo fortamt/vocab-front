@@ -11,8 +11,10 @@ if (window.Telegram && window.Telegram.WebApp) {
   }
 }
 
+;
+
 // --- Конфигурация ---
-const API_BASE_URL = 'https://a931-176-113-164-251.ngrok-free.app';
+const API_BASE_URL = 'https://5f4b-176-113-164-251.ngrok-free.app';
 
 // Стек экранов для каждой вкладки
 const screenStacks = {
@@ -22,18 +24,6 @@ const screenStacks = {
   settings: ['main']
 };
 
-// --- Состояние игры карточек (изолировано от глобальных переменных) ---
-const cardGame = {
-  words: [],           // массив слов { en, ru, ... }
-  currentIndex: 0,
-  deck: null,         // будет установлен после загрузки DOM
-  currentCard: null,
-  isDragging: false,
-  startX: 0,
-  startY: 0,
-  SWIPE_THRESHOLD: 80,
-  MAX_OPACITY_DISTANCE: 100
-};
 
 // --- Функция загрузки списка (подэкран) ---
 async function loadList(listPrefix) {
@@ -103,6 +93,8 @@ const apiFetch = async (url, options = {}) => {
   return fetch(url, { ...options, headers });
 };
 
+apiFetch(`${API_BASE_URL}/api/user/auth`, { method: 'POST' });
+
 // --- Навигация по вкладкам ---
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -138,9 +130,9 @@ async function openScreen(tabId, screenId, listPrefix = null, listName = null) {
         }
       });
       if (!response.ok) throw new Error('Server error');
-      const data = await response.json();
-      if (!data || data.length === 0) throw new Error('empty list');
-      startCardGame(data); // сброс и инициализация карточек
+      words = await response.json();
+      if (!words || words.length === 0) throw new Error('empty list');
+      loadNextCard(); // сброс и инициализация карточек
     } catch (error) {
       console.error('loading error:', error);
       if (window.Telegram?.WebApp) {
@@ -163,6 +155,7 @@ function closeScreen(tabId) {
   stack.pop();
   const previousScreenId = stack[stack.length - 1];
   showScreen(tabId, previousScreenId);
+  index = 0; //временное решение, надо доделать когда реализую функцию экрана итогов сессии
 }
 
 // --- Показать конкретный экран внутри панели ---
@@ -174,34 +167,49 @@ function showScreen(tabId, screenId) {
   if (screen) screen.classList.add('active');
 }
 
-// --- Логика карточек (свайп-карточки) ---
+let words = [];
+let index = 0;
+let currentCard = null;
+let animating = false;
 
-// Создаёт DOM карточки
-function renderCard(wordObj) {
+const deckDiv = document.getElementById('deck');
+const progressDiv = document.getElementById('progress');
+
+function updateProgress() {
+  const percent = (index / words.length) * 100;   // index = сколько карточек уже обработано
+  const fill = document.getElementById('progressFill');
+  const text = document.getElementById('progressText');
+  if (fill) fill.style.width = `${percent}%`;
+  if (text) text.textContent = `${index} / ${words.length}`;
+}
+
+// Создаёт карточку
+function createCard(wordObj) {
   const card = document.createElement('div');
   card.className = 'card';
   card.innerHTML = `
-    <div class="card-inner">
-      <div class="face front">
-        <span class="word-label">Слово</span>
-        <span class="word-text">${escapeHtml(wordObj.en)}</span>
-        <span class="hint">Нажмите для перевода</span>
+      <div class="card-inner">
+        <div class="face front">
+          <div class="word-label">СЛОВО</div>
+          <div class="word-text">${escapeHtml(wordObj.en)}</div>
+          <div class="hint">нажмите → перевод</div>
+        </div>
+        <div class="face back">
+          <div class="word-label">ПЕРЕВОД</div>
+          <div class="word-text">${escapeHtml(wordObj.ru)}</div>
+          <div class="hint">нажмите ← обратно</div>
+        </div>
       </div>
-      <div class="face back">
-        <span class="word-label">Перевод</span>
-        <span class="word-text">${escapeHtml(wordObj.ru)}</span>
-        <span class="hint">Нажмите, чтобы вернуть</span>
-      </div>
-    </div>
-    <div class="indicator left">НЕ ЗНАЮ</div>
-    <div class="indicator right">ЗНАЮ</div>
-  `;
+    `;
+  // переворот по клику
+  card.addEventListener('click', (e) => {
+    if (animating) return;
+    card.classList.toggle('flipped');
+  });
   return card;
 }
 
-// Простейшая защита от XSS
 function escapeHtml(str) {
-  if (!str) return '';
   return str.replace(/[&<>]/g, function (m) {
     if (m === '&') return '&amp;';
     if (m === '<') return '&lt;';
@@ -210,161 +218,56 @@ function escapeHtml(str) {
   });
 }
 
-// Инициализация или перезапуск игры с новыми словами
-function startCardGame(newWords) {
-  cardGame.words = newWords;
-  cardGame.currentIndex = 0;
-  cardGame.currentCard = null;
-  cardGame.isDragging = false;
-  if (cardGame.deck) {
-    cardGame.deck.innerHTML = '';
-    if (newWords.length === 0) {
-      cardGame.deck.innerHTML = '<div style="text-align:center; padding:40px;">Список слов пуст 🫤</div>';
-      return;
-    }
-    loadNextCard();
-  }
-}
-
-// Загружает следующую карточку в колоду
+// Загрузить следующую карточку (или финиш)
 function loadNextCard() {
-  const { deck, words, currentIndex } = cardGame;
-  if (!deck) return;
-  deck.innerHTML = '';
-  if (currentIndex >= words.length) {
-    deck.innerHTML = '<div style="text-align:center; padding:40px; font-size:24px;">Слова закончились 🎉</div>';
-    return;
-  }
-
-  const card = renderCard(words[currentIndex]);
-  deck.appendChild(card);
-  cardGame.currentCard = card;
-  attachEvents(card);
-
-  if (currentIndex === 0) {
-    card.classList.add('hint-sway');
-  }
-}
-
-// Прикрепление обработчиков мыши/тача
-function attachEvents(card) {
-  card.addEventListener('mousedown', onDragStart);
-  card.addEventListener('touchstart', onDragStart, { passive: false });
-}
-
-function onDragStart(e) {
-  if (e.target.closest('.card') !== cardGame.currentCard) return;
-
-  cardGame.isDragging = true;
-  const point = e.touches ? e.touches[0] : e;
-  cardGame.startX = point.clientX;
-  cardGame.startY = point.clientY;
-
-  const card = cardGame.currentCard;
-  card.classList.remove('hint-sway');
-  card.style.transition = 'none';
-
-  document.addEventListener('mousemove', onDragMove);
-  document.addEventListener('mouseup', onDragEnd);
-  document.addEventListener('touchmove', onDragMove, { passive: false });
-  document.addEventListener('touchend', onDragEnd);
-}
-
-function onDragMove(e) {
-  if (!cardGame.isDragging || !cardGame.currentCard) return;
-  e.preventDefault();
-
-  const point = e.touches ? e.touches[0] : e;
-  const diffX = point.clientX - cardGame.startX;
-  const diffY = point.clientY - cardGame.startY;
-  const rotate = diffX * 0.05;
-
-  const card = cardGame.currentCard;
-  card.style.transform = `translate(${diffX}px, ${diffY}px) rotate(${rotate}deg)`;
-
-  const leftIndicator = card.querySelector('.indicator.left');
-  const rightIndicator = card.querySelector('.indicator.right');
-  const absDiff = Math.abs(diffX);
-  const opacity = Math.min(1, absDiff / cardGame.MAX_OPACITY_DISTANCE);
-
-  if (diffX > 0) {
-    if (leftIndicator) leftIndicator.style.opacity = 0;
-    if (rightIndicator) rightIndicator.style.opacity = opacity;
-  } else if (diffX < 0) {
-    if (leftIndicator) leftIndicator.style.opacity = opacity;
-    if (rightIndicator) rightIndicator.style.opacity = 0;
-  } else {
-    if (leftIndicator) leftIndicator.style.opacity = 0;
-    if (rightIndicator) rightIndicator.style.opacity = 0;
-  }
-}
-
-function onDragEnd(e) {
-  if (!cardGame.isDragging || !cardGame.currentCard) return;
-  cardGame.isDragging = false;
-
-  document.removeEventListener('mousemove', onDragMove);
-  document.removeEventListener('mouseup', onDragEnd);
-  document.removeEventListener('touchmove', onDragMove);
-  document.removeEventListener('touchend', onDragEnd);
-
-  const point = e.changedTouches ? e.changedTouches[0] : e;
-  const diffX = point.clientX - cardGame.startX;
-  const diffY = point.clientY - cardGame.startY;
-  const card = cardGame.currentCard;
-
-  // Скрываем индикаторы
-  const leftIndicator = card.querySelector('.indicator.left');
-  const rightIndicator = card.querySelector('.indicator.right');
-  if (leftIndicator) leftIndicator.style.opacity = 0;
-  if (rightIndicator) rightIndicator.style.opacity = 0;
-
-  // Клик (почти без движения) — переворот карточки
-  if (Math.abs(diffX) < 5 && Math.abs(diffY) < 5) {
-    card.style.transition = 'transform 0.25s ease';
-    card.style.transform = '';
-    card.classList.toggle('flipped');
-    return;
-  }
-
-  // Свайп
-  card.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
-  if (Math.abs(diffX) > cardGame.SWIPE_THRESHOLD) {
-    const direction = diffX > 0 ? 'swiped-right' : 'swiped-left';
-    card.classList.add(direction);
-
-    setTimeout(() => {
-      if (cardGame.currentCard === card) {
-        card.remove();
-        cardGame.currentCard = null;
-      }
-      cardGame.currentIndex++;
+  if (index >= words.length) {
+    deckDiv.innerHTML = `
+        <div class="end">
+          🎉 Все слова повторены! 🎉
+          <div class="restart" id="restartBtn">⟳ Начать сначала</div>
+        </div>
+      `;
+    currentCard = null;
+    updateProgress();
+    document.getElementById('restartBtn')?.addEventListener('click', () => {
+      index = 0;
       loadNextCard();
-    }, 250);
-  } else {
-    // Не дотянули – возвращаем на место
-    card.style.transform = '';
+    });
+    return;
   }
+
+  const card = createCard(words[index]);
+  deckDiv.innerHTML = '';
+  deckDiv.appendChild(card);
+  currentCard = card;
+  updateProgress();
+  animating = false;  // новая карточка готова
 }
 
-// --- Инициализация приложения после загрузки DOM ---
-document.addEventListener('DOMContentLoaded', () => {
-  // Устанавливаем ссылку на deck для карточной игры
-  cardGame.deck = document.getElementById('deck');
-  // Начальное состояние: все экраны main активны по умолчанию (уже в разметке)
-  // Показываем первую вкладку home
-  switchTab('home');
+// Анимация уезда
+function exitCard(direction) {
+  if (!currentCard || animating) return;
+  animating = true;
 
-  // Обработчик для кнопки "Назад" (если есть в интерфейсе)
-  // Предполагаем, что в каждом экране есть элемент с классом .back-button
-  document.addEventListener('click', (e) => {
-    const backBtn = e.target.closest('.back-button');
-    if (backBtn) {
-      const panel = backBtn.closest('.tab-panel');
-      if (panel) {
-        const tabId = panel.id.replace('panel-', '');
-        closeScreen(tabId);
-      }
-    }
-  });
-});
+  currentCard.classList.add(direction === 'right' ? 'slide-right' : 'slide-left');
+  currentCard.style.pointerEvents = 'none';
+
+  const onFinish = () => {
+    if (currentCard && currentCard.parentNode) currentCard.remove();
+    index++;
+    loadNextCard();
+    animating = false;
+  };
+  currentCard.addEventListener('transitionend', onFinish, { once: true });
+  // запасной таймер (на случай, если transition не сработает)
+  setTimeout(() => {
+    if (animating) onFinish();
+  }, 300);
+}
+
+// Обработчики кнопок
+document.getElementById('btnKnow').onclick = () => exitCard('right');
+document.getElementById('btnNotKnow').onclick = () => exitCard('left');
+
+// Старт
+loadNextCard();
